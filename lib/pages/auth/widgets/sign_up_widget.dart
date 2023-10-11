@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/register/register_bloc.dart';
+import 'package:flutter_app/data/datasources/auth_local_datasource.dart';
+import 'package:flutter_app/data/models/request/register_request_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../utils/color_resources.dart';
 import '../../../utils/custom_themes.dart';
@@ -7,6 +11,7 @@ import '../../base_widgets/button/custom_button.dart';
 import '../../base_widgets/text_field/custom_password_textfield.dart';
 import '../../base_widgets/text_field/custom_textfield.dart';
 import '../../dashboard/dashboard_page.dart';
+import '../auth_page.dart';
 
 class SignUpWidget extends StatefulWidget {
   const SignUpWidget({Key? key}) : super(key: key);
@@ -37,6 +42,12 @@ class SignUpWidgetState extends State<SignUpWidget> {
   addUser() async {
     if (_formKey!.currentState!.validate()) {
       _formKey!.currentState!.save();
+      final model = RegisterRequestModel(
+        name: _firstNameController.text,
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      context.read<RegisterBloc>().add(RegisterEvent.register(model));
       isEmailVerified = true;
     } else {
       isEmailVerified = false;
@@ -126,7 +137,37 @@ class SignUpWidgetState extends State<SignUpWidget> {
               right: Dimensions.marginSizeLarge,
               bottom: Dimensions.marginSizeLarge,
               top: Dimensions.marginSizeLarge),
-          child: CustomButton(onTap: addUser, buttonText: 'Sign Up'),
+          child: BlocListener<RegisterBloc, RegisterState>(
+            listener: (context, state) {
+              state.maybeWhen(
+                orElse: () {},
+                error: (message) {
+                  return ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(message)),
+                  );
+                },
+                loaded: (data) async {
+                  await AuthLocalDatasource().saveAuthData(data);
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (context) {
+                    return const AuthPage();
+                  }), (route) => false);
+                },
+              );
+            },
+            child: BlocBuilder<RegisterBloc, RegisterState>(
+              builder: (context, state) {
+                return state.maybeWhen(
+                  orElse: () {
+                    return CustomButton(onTap: addUser, buttonText: 'Sign Up');
+                  },
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              },
+            ),
+          ),
         ),
         Center(
             child: Row(
