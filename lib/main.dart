@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/splash/splash_page.dart';
+import 'package:flutter_app/pages/auth/auth_page.dart';
 import 'package:flutter_app/utils/light_themes.dart';
 
 void main() {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: light,
-      home: const SplashPage(),
+      home: const AuthPage(),
     );
   }
 }
