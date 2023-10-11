@@ -50,6 +50,7 @@ class _HomePageState extends State<DashboardPage> {
             state.maybeWhen(
               orElse: () {},
               loaded: (message) {
+                AuthLocalDatasource().removeAuthData();
                 Navigator.pushAndRemoveUntil(context,
                     MaterialPageRoute(builder: (context) {
                   return const AuthPage();
