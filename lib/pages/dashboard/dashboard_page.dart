@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/data/datasources/auth_local_datasource.dart';
+import 'package:flutter_app/pages/auth/auth_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../bloc/logout/logout_bloc.dart';
 import '../../utils/images.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -41,8 +44,45 @@ class _HomePageState extends State<DashboardPage> {
       const Center(
         child: Text('Order'),
       ),
-      const Center(
-        child: Text('More'),
+      Center(
+        child: BlocConsumer<LogoutBloc, LogoutState>(
+          listener: (context, state) {
+            state.maybeWhen(
+              orElse: () {},
+              loaded: (message) {
+                Navigator.pushAndRemoveUntil(context,
+                    MaterialPageRoute(builder: (context) {
+                  return const AuthPage();
+                }), (route) => false);
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text('Logout Success'),
+                  backgroundColor: Colors.blue,
+                ));
+              },
+              error: (message) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(message),
+                  backgroundColor: Colors.red,
+                ));
+              },
+            );
+          },
+          builder: (context, state) {
+            return state.maybeWhen(
+              orElse: () {
+                return ElevatedButton(
+                  onPressed: () {
+                    context.read<LogoutBloc>().add(const LogoutEvent.logout());
+                  },
+                  child: const Text('Logout'),
+                );
+              },
+              loading: () => const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          },
+        ),
       ),
     ];
   }
