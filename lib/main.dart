@@ -30,24 +30,26 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-          title: 'Flutter Demo',
-          theme: light,
-          home: FutureBuilder<bool>(
-            future: AuthLocalDatasource().isLogin(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Scaffold(
-                  body: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              } else if (snapshot.hasData && snapshot.data!) {
-                return const DashboardPage();
-              } else {
-                return const AuthPage();
-              }
-            },
-          )),
+        title: 'Flutter Demo',
+        theme: light,
+        home: FutureBuilder<bool>(
+          future: AuthLocalDatasource().isLogin(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            } else if (snapshot.hasData && snapshot.data!) {
+              return const DashboardPage();
+            } else {
+              return const AuthPage();
+            }
+          },
+        ),
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }
