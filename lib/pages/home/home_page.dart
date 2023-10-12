@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/categories/categories_bloc.dart';
 import 'package:flutter_app/bloc/products/products_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,6 +33,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     context.read<ProductsBloc>().add(const ProductsEvent.getAll());
+    context.read<CategoriesBloc>().add(const CategoriesEvent.getCategories());
     super.initState();
   }
 

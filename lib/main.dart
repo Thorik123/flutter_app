@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/categories/categories_bloc.dart';
 import 'package:flutter_app/bloc/login/login_bloc.dart';
 import 'package:flutter_app/bloc/logout/logout_bloc.dart';
 import 'package:flutter_app/bloc/products/products_bloc.dart';
@@ -31,6 +32,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ProductsBloc(),
+        ),
+        BlocProvider(
+          create: (context) => CategoriesBloc(),
         ),
       ],
       child: MaterialApp(
