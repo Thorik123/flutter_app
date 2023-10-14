@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/checkout/checkout_bloc.dart';
 import 'package:flutter_app/utils/price_ext.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:flutter_app/data/models/product_response_model.dart';
@@ -140,34 +142,49 @@ class CartBottomSheetState extends State<CartBottomSheet> {
                 height: Dimensions.paddingSizeSmall,
               ),
               Row(children: [
-                const Text('Quantity', style: robotoBold),
-                QuantityButton(
-                    isIncrement: false,
-                    quantity: quantity,
-                    stock: 10,
-                    minimumOrderQuantity: 1,
-                    digitalProduct: true),
+                const Text('Quantity  ', style: robotoBold),
+                // QuantityButton(
+                //     isIncrement: false,
+                //     quantity: quantity,
+                //     stock: 10,
+                //     minimumOrderQuantity: 1,
+                //     digitalProduct: true),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      quantity -= 1;
+                    });
+                  },
+                  child: const Text('-'),
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
                 Text('$quantity', style: titilliumSemiBold),
-                InkWell(
-                  onTap: () {
+                const SizedBox(
+                  width: 8,
+                ),
+                ElevatedButton(
+                  onPressed: () {
                     setState(() {
                       quantity += 1;
                     });
                   },
-                  child: const QuantityButton(
-                      isIncrement: true,
-                      quantity: 10,
-                      stock: 10,
-                      minimumOrderQuantity: 1,
-                      digitalProduct: true),
+                  child: const Text('+'),
                 ),
+                // QuantityButton(
+                //     isIncrement: true,
+                //     quantity: quantity,
+                //     stock: 10,
+                //     minimumOrderQuantity: 1,
+                //     digitalProduct: true),
               ]),
               const SizedBox(height: Dimensions.paddingSizeSmall),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 const Text('Total Price', style: robotoBold),
                 const SizedBox(width: Dimensions.paddingSizeSmall),
                 Text(
-                  'Rp 4.000.000',
+                  '${widget.product.price! * quantity}'.formatPrice(),
                   style: titilliumBold.copyWith(
                       color: ColorResources.getPrimary(context),
                       fontSize: Dimensions.fontSizeLarge),
@@ -178,11 +195,17 @@ class CartBottomSheetState extends State<CartBottomSheet> {
                 children: [
                   Expanded(
                     child: CustomButton(
-                        buttonText: 'Add to Cart',
-                        onTap: () {
-                          // Navigator.of(context).push(MaterialPageRoute(
-                          //     builder: (context) => const CartPage()));
-                        }),
+                      buttonText: 'Add to Cart',
+                      onTap: () {
+                        context.read<CheckoutBloc>().add(
+                              CheckoutEvent.addToCart(
+                                widget.product,
+                                quantity,
+                              ),
+                            );
+                        Navigator.pop(context);
+                      },
+                    ),
                   ),
                   const SizedBox(width: Dimensions.paddingSizeDefault),
                   Expanded(
@@ -223,19 +246,19 @@ class QuantityButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
-        if (!isIncrement && quantity! > 1) {
-          if (quantity! > minimumOrderQuantity!) {
-          } else {
-            Fluttertoast.showToast(
-                msg: 'minimum qty 1',
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
-          }
-        } else if (isIncrement && quantity! < stock! || digitalProduct) {}
+        // if (!isIncrement && quantity! > 1) {
+        //   if (quantity! > minimumOrderQuantity!) {
+        //   } else {
+        //     Fluttertoast.showToast(
+        //         msg: 'minimum qty 1',
+        //         toastLength: Toast.LENGTH_SHORT,
+        //         gravity: ToastGravity.BOTTOM,
+        //         timeInSecForIosWeb: 1,
+        //         backgroundColor: Colors.red,
+        //         textColor: Colors.white,
+        //         fontSize: 16.0);
+        //   }
+        // } else if (isIncrement && quantity! < stock! || digitalProduct) {}
       },
       icon: Container(
         width: 40,

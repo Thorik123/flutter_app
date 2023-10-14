@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/checkout/checkout_bloc.dart';
 
 import 'package:flutter_app/data/models/product_response_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../utils/color_resources.dart';
 import '../../../utils/custom_themes.dart';
@@ -69,11 +71,25 @@ class _BottomCartViewState extends State<BottomCartView> {
                       shape: BoxShape.circle,
                       color: ColorResources.getPrimary(context),
                     ),
-                    child: Text(
-                      '3',
-                      style: titilliumSemiBold.copyWith(
-                          fontSize: Dimensions.fontSizeExtraSmall,
-                          color: Theme.of(context).highlightColor),
+                    child: BlocBuilder<CheckoutBloc, CheckoutState>(
+                      builder: (context, state) {
+                        return state.map(
+                          loaded: (value) {
+                            int totalQty = 0;
+                            value.products.forEach(
+                              (element) {
+                                totalQty += element.quantity;
+                              },
+                            );
+                            return Text(
+                              '$totalQty',
+                              style: titilliumSemiBold.copyWith(
+                                  fontSize: Dimensions.fontSizeExtraSmall,
+                                  color: Theme.of(context).highlightColor),
+                            );
+                          },
+                        );
+                      },
                     ),
                   ),
                 )
