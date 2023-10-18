@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/checkout/checkout_bloc.dart';
-
 import 'package:flutter_app/data/models/product_response_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../bloc/checkout/checkout_bloc.dart';
 import '../../../utils/color_resources.dart';
 import '../../../utils/custom_themes.dart';
 import '../../../utils/dimensions.dart';
 import '../../../utils/images.dart';
 import '../../base_widgets/show_custom_snakbar.dart';
+import '../../cart/crat_page.dart';
 import 'cart_bottom_sheet.dart';
 
 class BottomCartView extends StatefulWidget {
@@ -55,8 +55,8 @@ class _BottomCartViewState extends State<BottomCartView> {
               child: Stack(children: [
                 GestureDetector(
                     onTap: () {
-                      // Navigator.of(context).push(MaterialPageRoute(
-                      //     builder: (context) => const CartPage()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const CartPage()));
                     },
                     child: Image.asset(Images.cartArrowDownImage,
                         color: ColorResources.getPrimary(context))),
@@ -74,6 +74,10 @@ class _BottomCartViewState extends State<BottomCartView> {
                     child: BlocBuilder<CheckoutBloc, CheckoutState>(
                       builder: (context, state) {
                         return state.map(
+                          loading: (value) {
+                            // ignore: prefer_const_constructors
+                            return CircularProgressIndicator();
+                          },
                           loaded: (value) {
                             int totalQty = 0;
                             value.products.forEach(
