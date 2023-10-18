@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_app/bloc/checkout/checkout_bloc.dart';
+import 'package:flutter_app/utils/price_ext.dart';
+
 import '../../../utils/color_resources.dart';
 import '../../../utils/custom_themes.dart';
 import '../../../utils/dimensions.dart';
@@ -8,10 +11,11 @@ import '../../../utils/images.dart';
 import '../../product/product_detail.dart';
 
 class CartWidget extends StatelessWidget {
-  final int index;
-  final bool fromCheckout;
-  const CartWidget({Key? key, required this.index, required this.fromCheckout})
-      : super(key: key);
+  final ProductQuantity productQuantity;
+  const CartWidget({
+    Key? key,
+    required this.productQuantity,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +52,7 @@ class CartWidget extends StatelessWidget {
                     placeholder: Images.placeholder,
                     height: 60,
                     width: 60,
-                    image: 'https://picsum.photos/250',
+                    image: productQuantity.product.imageProduct!,
                     imageErrorBuilder: (c, o, s) => Image.asset(
                       Images.placeholder,
                       fit: BoxFit.cover,
@@ -69,7 +73,7 @@ class CartWidget extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                            child: Text('Product Name $index',
+                            child: Text(productQuantity.product.name!,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: titilliumBold.copyWith(
@@ -81,18 +85,16 @@ class CartWidget extends StatelessWidget {
                           const SizedBox(
                             width: Dimensions.paddingSizeSmall,
                           ),
-                          !fromCheckout
-                              ? InkWell(
-                                  onTap: () {},
-                                  child: SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: Image.asset(
-                                        Images.delete,
-                                        scale: .5,
-                                      )),
-                                )
-                              : const SizedBox.shrink(),
+                          InkWell(
+                            onTap: () {},
+                            child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: Image.asset(
+                                  Images.delete,
+                                  scale: .5,
+                                )),
+                          )
                         ],
                       ),
                       const SizedBox(
@@ -101,13 +103,17 @@ class CartWidget extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            'Rp 1.400.000',
+                            '${productQuantity.product.price}'.formatPrice(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: titilliumRegular.copyWith(
                                 color: ColorResources.getPrimary(context),
                                 fontSize: Dimensions.fontSizeExtraLarge),
                           ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text(' X  ${productQuantity.quantity}'),
                         ],
                       ),
                       const SizedBox(width: Dimensions.paddingSizeSmall),

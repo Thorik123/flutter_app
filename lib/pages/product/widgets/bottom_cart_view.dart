@@ -8,7 +8,7 @@ import '../../../utils/custom_themes.dart';
 import '../../../utils/dimensions.dart';
 import '../../../utils/images.dart';
 import '../../base_widgets/show_custom_snakbar.dart';
-import '../../cart/crat_page.dart';
+import '../../cart/cart_page.dart';
 import 'cart_bottom_sheet.dart';
 
 class BottomCartView extends StatefulWidget {
